@@ -1,0 +1,3 @@
+tessedit_write_images 0
+load_system_dawg 0
+load_freq_dawg 0

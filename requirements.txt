@@ -1,0 +1,2 @@
+simple-hexdump==0.0.1
+TatSu==5.9.2

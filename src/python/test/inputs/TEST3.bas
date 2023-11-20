@@ -1,0 +1,1 @@
+10 PRINT"HELLO{10 spaces}WORLD!"

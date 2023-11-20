@@ -1,0 +1,292 @@
+#**********************************************************************************
+# Copyright (C) 2023 Craig Setera
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+#**********************************************************************************
+
+# Based on http://rosettacode.org/wiki/BNF_Grammar
+# TatSu grammar - https://tatsu.readthedocs.io/en/stable/index.html
+# -----------------------------------------------------------------------
+# Commodore PET BASIC
+#
+# Beginner's All-purpose Symbolic Instruction Code
+#
+#    "It is practically impossible to teach good programming style to students
+#    that have had prior exposure to BASIC; as potential programmers they are
+#    mentally mutilated beyond hope of regeneration."
+#
+#    - Edsger W. Dijkstra
+#
+#
+# BASIC is one of the oldest programming language and one of the most popular.
+# It was developed in 1964 by John G. Kemeny and Thomas E. Kurtz to teach
+# students the basics of programming concepts. At the advent of the microcomputer,
+# BASIC was implemented on numerous platforms such as the Commodore, Atari,
+# Apple II, Altair, IBM PC computers. Over time, BASIC evolved into GW-BASIC,
+# QBasic, Visual Basic, and recently Visual Basic .NET.
+#
+# In practically all programming languages, the reserved word/symbol that denotes
+# a comment is treated as a form of whitespace - having no effect in the manner in
+# which the program runs. Once such type of comment is used to indicate the remainder
+# of the line is to be ignored. These can be added to the end of any line without
+# changing the meaning of the program. In C++, it is the '//' symbol.
+#
+# However, in the BASIC programming language, the line comment is treated like a
+# statement. For instance, if 'REM' was a normal line comment:
+#
+#    10  PRINT "Hello World" REM Common first program
+#
+# would be a valid statement. However, in BASIC, this is illegal. In the example
+# above, the comment must be added as an additional statement.
+#
+#    10  PRINT "Hello World" : REM Common first program
+#
+# As a result, the Line Comment terminal that is used in the GOLD Parser cannot be
+# used here. In the grammar below, a 'Remark' terminal was created that accepts all
+# series of printable characters starting with the characters "REM ". In some
+# implementations of BASIC, any string starting with "REM" is a comment statement.
+# Examples include "REMARK", "REMARKABLE" and "REMODEL". This grammar requires the space.
+#
+# -----------------------------------------------------------------------
+#
+# "Name"    = 'Commodore PET BASIC'
+# "Author"  = 'Commodore Business Machines'
+# "Version" = '2.0'
+# "About"   = 'This is the version of BASIC that was used on the Commodore 64.'
+#
+# -----------------------------------------------------------------------
+
+@@grammar::CBMBASIC
+@@ignorecase::True
+
+start           =
+                { line }+ $
+                ;
+
+line            =
+                integer statements [new_line]
+                ;
+
+statements      =
+                ':'.{statement}
+                ;
+
+statement       =
+                | 'CLOSE' integer
+                | 'CMD' expression
+                | data_statement
+                | 'DEF' function_id '(' id_list ')' '=' expression     # The ID must start with FN
+                | 'DIM' id '(' expression_list ')'
+                | for_statement
+                | 'GET' id
+                | 'GET' '#' integer ',' id
+                | 'GOSUB' expression
+                | 'GOTO' expression
+                | 'IF' expression 'THEN' then_clause
+                | 'INPUT' id_list
+                | 'INPUT' '#' integer ',' id_list
+                | 'LET' id '=' expression
+                | 'LIST' line_range
+                | 'LOAD' value_list
+                | next_statement
+                | 'ON' id 'GOTO' expression_list
+                | 'OPEN' expression_list
+                | 'POKE' expression ',' expression
+                | print_statement
+                | 'PRINT' '#' integer ',' print_list
+                | read_statement
+                | 'RUN'
+                | 'RUN' expression
+                | 'SYS' expression
+                | 'WAIT' expression_list
+                | 'VERIFY' expression_list
+                | assignment
+                | 'REM' STRING_CHARS
+                ;
+
+assignment      =
+                id '=' expression
+                ;
+
+line_range      =
+                | integer
+                | integer '-'
+                | integer '-' integer
+                ;
+
+then_clause     =
+                | integer
+                | statement
+                ;
+
+print_list      =
+                | expression ';' print_list
+                | expression
+                ;
+
+# ------ Statements _--------------------------------
+
+data_statement  =
+                'DATA' constant_list
+                ;
+
+next_statement  =
+                'NEXT' [id_list]
+                ;
+
+read_statement  =
+                'READ' id_list
+                ;
+
+simple_statement =
+                | 'CLR'
+                | 'CONT'                                                 # Continue
+                | 'END'
+                | 'NEW'
+                | 'RESTORE'
+                | 'RETURN'
+                | 'STOP'
+                ;
+
+for_statement   =
+                | 'FOR' id '=' expression 'TO' expression
+                | 'FOR' id '=' expression 'TO' expression 'STEP' expression
+                ;
+
+print_statement =
+                'PRINT' print_list
+                ;
+
+
+# ------ Expressions --------------------------------
+
+expression_list =
+                | expression ',' expression_list
+                | expression
+                ;
+
+expression      =
+                | and_exp 'OR' expression
+                | and_exp
+                ;
+
+and_exp         =
+                | not_exp 'AND' and_exp
+                | not_exp
+                ;
+
+not_exp         =
+                | 'NOT' compare_exp
+                | compare_exp
+                ;
+
+compare_exp     =
+                | add_exp '='  compare_exp
+                | add_exp '<>' compare_exp
+                | add_exp '>'  compare_exp
+                | add_exp '>=' compare_exp
+                | add_exp '<'  compare_exp
+                | add_exp '<=' compare_exp
+                | add_exp
+                ;
+
+add_exp         =
+                | mult_exp '+' add_exp
+                | mult_exp '-' add_exp
+                | mult_exp
+                ;
+
+mult_exp        =
+                | negate_exp '*' mult_exp
+                | negate_exp '/' mult_exp
+                | negate_exp
+                ;
+
+negate_exp      =
+                | '-' power_exp
+                | power_exp
+                ;
+
+power_exp       =
+                | power_exp '^' sub_exp                        # On the Commodore, the symbol was an up-arrow
+                | sub_exp
+                ;
+
+sub_exp         =
+                | '(' expression ')'
+                | value
+                ;
+
+value           =
+                | id
+                | 'ABS'         '(' expression ')'
+                | 'ASC'         '(' expression ')'
+                | 'ATN'         '(' expression ')'
+                | 'CHR$'        '(' expression ')'
+                | 'COS'         '(' expression ')'
+                | 'EXP'         '(' expression ')'
+                | function_id   '(' expression_list ')'
+                | 'FRE'         '(' value ')'                       # The <Value> is  irrelevant
+                | 'INT'         '(' expression ')'
+                | 'LEFT$'       '(' expression ',' expression ')'
+                | 'LEN'         '(' expression ')'
+                | 'PEEK'        '(' expression ')'
+                | 'POS'         '(' value ')'                       # The <Value> is  irrelevant
+                | 'RIGHT$'      '(' expression ',' expression ')'
+                | 'RND'         '(' expression ')'
+                | 'SGN'         '(' expression ')'
+                | 'SPC'         '(' expression ')'
+                | 'SQR'         '(' expression ')'
+                | 'TAB'         '(' expression ')'
+                | 'TAN'         '(' expression ')'
+                | 'VAL'         '(' expression ')'
+                | constant
+                ;
+
+id_list         =
+                ','.{id}
+                ;
+
+value_list      =
+                ','.{value}
+                ;
+
+constant_list   =
+                ','.{constant}
+                ;
+
+constant        =
+                | integer
+                | string
+                | real
+                ;
+
+integer         =
+                /\d+/
+                ;
+
+new_line        =
+                /\n|\r\n/
+                ;
+
+real            =
+                /\d+\.\d+/
+                ;
+
+STRING_CHARS    =
+                /[a-zA-Z0-9()\[\]{},.!@#$%&*:; ]/
+                ;
+
+string          =
+                '"'{STRING_CHARS}*'"'
+                ;
+
+id              =
+                /[a-zA-Z][a-zA-Z0-9$]?/
+                ;
+
+function_id     =
+                /FN [a-zA-Z][a-zA-Z]?/
+                ;
