@@ -28,6 +28,14 @@ class BasicV2Semantics:
         """Wrap the for statement AST into a tokenizer"""
         return ForStatementTokenizer(ast)
 
+    def get_statement(self, ast):
+        """Wrap the get statement AST into a tokenizer"""
+        return GetStatementTokenizer(ast)
+
+    def if_statement(self, ast):
+        """Wrap the if statement AST into a tokenizer"""
+        return IfStatementTokenizer(ast)
+
     def id(self, ast):
         """Wrap the id AST into a tokenizer"""
         return IdExpressionTokenizer(ast)
@@ -47,6 +55,10 @@ class BasicV2Semantics:
     def read_statement(self, ast):
         """Wrap the read statement AST into a tokenizer"""
         return ReadStatementTokenizer(ast)
+
+    def simp_value_expression(self, ast):
+        """Wrap the simple value expression AST into a tokenizer"""
+        return SimpleValueExpressionTokenizer(ast)
 
     def simple_statement(self, ast):
         """Wrap the simple statement AST into a tokenizer"""

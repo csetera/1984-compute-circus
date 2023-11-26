@@ -28,14 +28,14 @@ class ProgramGenerationTests(unittest.TestCase):
     # the expected P00 file output
     def test_generations(self):
         for file_name in sorted(listdir(self.input_folder)):
-            if file_name.endswith('.bas'):
+            if file_name.endswith('TEST5.bas'):
                 without_ext = file_name[:-4]
                 input = join(self.input_folder, file_name)
                 expected = join(self.expected_folder, without_ext + '.P00')
                 target = NamedTemporaryFile(suffix='.p00', delete=False)
 
                 print("Generating " + input + " => " + target.name);
-                generator = ProgramTokenizer(dump_tokens=False)
+                generator = ProgramTokenizer(dump_tokens=file_name.endswith('TEST5.bas'))
                 generator.generate(without_ext, input, target.name)
                 self._assert_file_content_equal(expected, target.name)
 

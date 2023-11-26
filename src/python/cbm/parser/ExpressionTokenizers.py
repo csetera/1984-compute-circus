@@ -21,3 +21,18 @@ class IdExpressionTokenizer(Tokenizer):
     """Tokenize an identifier"""
     def tokenize_into(self, buffer: TokenBuffer) -> None:
         buffer.append_string(self.ast)
+
+class SimpleValueExpressionTokenizer(Tokenizer):
+    """Tokenize a simple value expression"""
+    def tokenize_into(self, buffer: TokenBuffer) -> None:
+        (function, *rest) = self.ast
+        buffer.append_keyword(function)
+
+class ValueExpressionTokenizer(Tokenizer):
+    """Tokenize a value"""
+    def tokenize_into(self, buffer: TokenBuffer) -> None:
+        (first, *rest) = self.ast
+        if isinstance(first, Tokenizer):
+            first.tokenize_into(buffer)
+        else:
+            buffer.append_string(first)

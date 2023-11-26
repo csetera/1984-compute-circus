@@ -80,11 +80,10 @@ statement       =
                 | 'DEF' function_id '(' id_list ')' '=' expression     # The ID must start with FN
                 | 'DIM' id '(' expression_list ')'
                 | for_statement
-                | 'GET' id
-                | 'GET' '#' integer ',' id
+                | get_statement
                 | 'GOSUB' expression
                 | 'GOTO' expression
-                | 'IF' expression 'THEN' then_clause
+                | if_statement
                 | 'INPUT' id_list
                 | 'INPUT' '#' integer ',' id_list
                 | 'LET' id '=' expression
@@ -116,11 +115,6 @@ line_range      =
                 | integer '-' integer
                 ;
 
-then_clause     =
-                | integer
-                | statement
-                ;
-
 print_list      =
                 | expression ';' print_list
                 | expression
@@ -128,8 +122,22 @@ print_list      =
 
 # ------ Statements _--------------------------------
 
+get_statement   =
+                | 'GET' id
+                | 'GET' '#' integer ',' id
+                ;
+
 data_statement  =
                 'DATA' constant_list
+                ;
+
+if_statement    =
+                'IF' expression 'THEN' then_clause
+                ;
+
+then_clause     =
+                | integer
+                | statement
                 ;
 
 next_statement  =
@@ -163,8 +171,7 @@ print_statement =
 # ------ Expressions --------------------------------
 
 expression_list =
-                | expression ',' expression_list
-                | expression
+                ','.{expression}
                 ;
 
 expression      =
@@ -220,21 +227,26 @@ sub_exp         =
                 ;
 
 value           =
+                | constant
                 | id
+                | simp_value_expr
+                | function_id   '(' expression_list ')'
+                | 'LEFT$'       '(' expression ',' expression ')'
+                | 'RIGHT$'      '(' expression ',' expression ')'
+                ;
+
+simp_value_expr =
                 | 'ABS'         '(' expression ')'
                 | 'ASC'         '(' expression ')'
                 | 'ATN'         '(' expression ')'
                 | 'CHR$'        '(' expression ')'
                 | 'COS'         '(' expression ')'
                 | 'EXP'         '(' expression ')'
-                | function_id   '(' expression_list ')'
                 | 'FRE'         '(' value ')'                       # The <Value> is  irrelevant
                 | 'INT'         '(' expression ')'
-                | 'LEFT$'       '(' expression ',' expression ')'
                 | 'LEN'         '(' expression ')'
                 | 'PEEK'        '(' expression ')'
                 | 'POS'         '(' value ')'                       # The <Value> is  irrelevant
-                | 'RIGHT$'      '(' expression ',' expression ')'
                 | 'RND'         '(' expression ')'
                 | 'SGN'         '(' expression ')'
                 | 'SPC'         '(' expression ')'
@@ -242,7 +254,6 @@ value           =
                 | 'TAB'         '(' expression ')'
                 | 'TAN'         '(' expression ')'
                 | 'VAL'         '(' expression ')'
-                | constant
                 ;
 
 id_list         =
