@@ -99,8 +99,14 @@ class ReadStatementTokenizer(Tokenizer):
 class SimpleStatementTokenizer(Tokenizer):
     """Tokenization of simple statements of BASIC code that consist of only keywords"""
     def tokenize_into(self, buffer: TokenBuffer) -> None:
-        (keyword, *rest) = self.ast
+        buffer.append_keyword(self.ast)
+
+class SingleExpressionStatementTokenizer(Tokenizer):
+    """Tokenization of single expression statements of BASIC code"""
+    def tokenize_into(self, buffer: TokenBuffer) -> None:
+        (keyword, expression) = self.ast
         buffer.append_keyword(keyword)
+        expression.tokenize_into(buffer)
 
 class StringTokenizer(Tokenizer):
     """Tokenization of strings"""

@@ -74,34 +74,32 @@ statements      =
                 ;
 
 statement       =
-                | 'CLOSE' integer
-                | 'CMD' expression
+                | assignment
                 | data_statement
-                | 'DEF' function_id '(' id_list ')' '=' expression     # The ID must start with FN
-                | 'DIM' id '(' expression_list ')'
                 | for_statement
                 | get_statement
-                | 'GOSUB' expression
-                | 'GOTO' expression
                 | if_statement
+                | next_statement
+                | print_statement
+                | read_statement
+                | single_expr_stmt
+                | simple_statement
+                | 'CLOSE' integer
+                | 'DEF' function_id '(' id_list ')' '=' expression     # The ID must start with FN
+                | 'DIM' id '(' expression_list ')'
                 | 'INPUT' id_list
                 | 'INPUT' '#' integer ',' id_list
                 | 'LET' id '=' expression
                 | 'LIST' line_range
                 | 'LOAD' value_list
-                | next_statement
                 | 'ON' id 'GOTO' expression_list
                 | 'OPEN' expression_list
                 | 'POKE' expression ',' expression
-                | print_statement
                 | 'PRINT' '#' integer ',' print_list
-                | read_statement
                 | 'RUN'
                 | 'RUN' expression
-                | 'SYS' expression
                 | 'WAIT' expression_list
                 | 'VERIFY' expression_list
-                | assignment
                 | 'REM' STRING_CHARS
                 ;
 
@@ -156,6 +154,13 @@ simple_statement =
                 | 'RESTORE'
                 | 'RETURN'
                 | 'STOP'
+                ;
+
+single_expr_stmt =
+                | 'CMD' expression
+                | 'GOSUB' expression
+                | 'GOTO' expression
+                | 'SYS' expression
                 ;
 
 for_statement   =

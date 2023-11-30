@@ -64,6 +64,10 @@ class BasicV2Semantics:
         """Wrap the simple statement AST into a tokenizer"""
         return SimpleStatementTokenizer(ast)
 
+    def single_expr_stmt(self, ast):
+        """Wrap the single expression statement AST into a tokenizer"""
+        return SingleExpressionStatementTokenizer(ast)
+
     def string(self, ast):
         """Collapse the full definition of the string down to a full representation"""
         contents = ''.join(ast[1])
