@@ -8,6 +8,7 @@
 
 import sys
 import unittest
+from io import StringIO
 from os import listdir
 from os.path import dirname, join, realpath
 from tempfile import NamedTemporaryFile
@@ -35,15 +36,18 @@ class ProgramGenerationTests(unittest.TestCase):
                 target = NamedTemporaryFile(suffix='.p00', delete=False)
 
                 print("Generating " + input + " => " + target.name);
-                generator = ProgramTokenizer(dump_tokens=False) # file_name.endswith('TEST06.bas'))
+                debug_stream = StringIO()
+                generator = ProgramTokenizer(debug_stream=debug_stream)
                 generator.generate(without_ext, input, target.name)
-                self._assert_file_content_equal(expected, target.name)
+                self._assert_file_content_equal(expected, target.name, debug_stream)
 
     # Compare the contents of two files
-    def _assert_file_content_equal(self, expected_file, actual_file):
+    def _assert_file_content_equal(self, expected_file, actual_file, debug_stream):
+        self.debug_stream = debug_stream
         with open(expected_file, 'rb') as expected_file_bytes:
             with open(actual_file, 'rb') as actual_file_bytes:
-                self.assertEqual(actual_file_bytes.read(), expected_file_bytes.read())
+                error_message = "File " + actual_file + " does not match " + expected_file + "\n" + debug_stream.getvalue()
+                self.assertEqual(actual_file_bytes.read(), expected_file_bytes.read(), msg=error_message)
 
 if __name__ == '__main__':
     unittest.main()

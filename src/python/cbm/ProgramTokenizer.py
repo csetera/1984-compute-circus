@@ -10,25 +10,25 @@ from cbm.util import little_endian_short
 from cbm.parser.BasicV2Parser import BasicV2Parser
 from cbm.parser.BasicV2Semantics import BasicV2Semantics
 from hexdump import hexdump
+from io import StringIO
 
 BASIC_STARTING_ADDRESS = 2049
 
+#
+# https://vice-emu.sourceforge.io/vice_17.html#SEC428 - P00 file
+# https://michaelcmartin.github.io/Ophis/book/x72.html = PRG file
+#
+
 class ProgramTokenizer:
     """Tokenizer that tokenizes a BASIC program into a P00 file."""
-    def __init__(self, dump_tokens: bool = False):
-        # self.controlCharsMapper = ControlCharsMapper()
-        # self.petsciiMapper = PetsciiMapper()
+    def __init__(self, debug_stream: StringIO = None):
         self.parser = BasicV2Parser()
-        self.dump_tokens = dump_tokens
+        self.debug_stream = debug_stream
 
     def generate(self, title: str, source: str, target: str):
         """Tokenize the specified source file and write the result to the specified target file"""
         with open(source, 'r') as srcFile:
             with open(target, 'wb') as targetFile:
-                #
-                # https://vice-emu.sourceforge.io/vice_17.html#SEC428 - P00 file
-                # https://michaelcmartin.github.io/Ophis/book/x72.html = PRG file
-                #
                 self._write_header(title, targetFile)
                 self._tokenize_code(srcFile.read(), targetFile)
 
@@ -39,11 +39,11 @@ class ProgramTokenizer:
 
         for line in lines:
             tokenized = line.tokenize()
-            if self.dump_tokens:
+            if self.debug_stream:
                 (line, *rest) = line.ast
-                print("Line " + str(line) + ":")
-                print(hexdump(tokenized))
-                print()
+                print("Line " + str(line) + ":", file=self.debug_stream)
+                print(hexdump(tokenized), file=self.debug_stream)
+                print(file=self.debug_stream)
 
             next_address = current_address + len(tokenized) + 2
             targetFile.write(little_endian_short(next_address))
