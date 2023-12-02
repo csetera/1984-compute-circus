@@ -96,6 +96,14 @@ class ReadStatementTokenizer(Tokenizer):
         buffer.append_keyword(keyword)
         self.tokenize_list(buffer, identifiers[0])
 
+class RemarkStatementTokenizer(Tokenizer):
+    """Tokenization of REM statements of BASIC code"""
+    def tokenize_into(self, buffer: TokenBuffer) -> None:
+        (keyword, *items) = self.ast
+        buffer.append_keyword(keyword)
+        buffer.append_string(''.join(items[0]))
+
+
 class SimpleStatementTokenizer(Tokenizer):
     """Tokenization of simple statements of BASIC code that consist of only keywords"""
     def tokenize_into(self, buffer: TokenBuffer) -> None:

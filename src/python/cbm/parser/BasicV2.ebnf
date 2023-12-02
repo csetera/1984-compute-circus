@@ -82,6 +82,7 @@ statement       =
                 | next_statement
                 | print_statement
                 | read_statement
+                | remark_statement
                 | single_expr_stmt
                 | simple_statement
                 | 'CLOSE' integer
@@ -100,7 +101,6 @@ statement       =
                 | 'RUN' expression
                 | 'WAIT' expression_list
                 | 'VERIFY' expression_list
-                | 'REM' STRING_CHARS
                 ;
 
 assignment      =
@@ -144,6 +144,10 @@ next_statement  =
 
 read_statement  =
                 'READ' id_list
+                ;
+
+remark_statement =
+                'REM' {STRING_CHARS}+
                 ;
 
 simple_statement =

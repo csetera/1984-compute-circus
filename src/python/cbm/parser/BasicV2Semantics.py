@@ -56,6 +56,10 @@ class BasicV2Semantics:
         """Wrap the read statement AST into a tokenizer"""
         return ReadStatementTokenizer(ast)
 
+    def remark_statement(self, ast):
+        """Wrap the remark statement AST into a tokenizer"""
+        return RemarkStatementTokenizer(ast)
+
     def simp_value_expression(self, ast):
         """Wrap the simple value expression AST into a tokenizer"""
         return SimpleValueExpressionTokenizer(ast)
