@@ -9,6 +9,14 @@
 from cbm.parser.Tokenizers import Tokenizer
 from cbm.parser.TokenBuffer import TokenBuffer
 
+class AssignmentStatementTokenizer(Tokenizer):
+    """Tokenization of assignment statements of BASIC code"""
+    def tokenize_into(self, buffer: TokenBuffer) -> None:
+        (identifier, operator, expression) = self.ast
+        identifier.tokenize_into(buffer)
+        buffer.append_keyword(operator)
+        expression.tokenize_into(buffer)
+
 class GetStatementTokenizer(Tokenizer):
     """Tokenization of GET statements of BASIC code"""
     def tokenize_into(self, buffer: TokenBuffer) -> None:

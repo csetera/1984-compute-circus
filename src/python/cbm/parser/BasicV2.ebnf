@@ -74,7 +74,7 @@ statements      =
                 ;
 
 statement       =
-                | assignment
+                | assignment_statement
                 | data_statement
                 | for_statement
                 | get_statement
@@ -103,7 +103,7 @@ statement       =
                 | 'VERIFY' expression_list
                 ;
 
-assignment      =
+assignment_statement =
                 id '=' expression
                 ;
 

@@ -16,6 +16,10 @@ from cbm.parser.Tokenizers import *
 class BasicV2Semantics:
     """Semantics support for the parsing of a BASIC program."""
 
+    def assignment_statement(self, ast):
+        """Wrap the assign statement AST into a tokenizer"""
+        return AssignmentStatementTokenizer(ast)
+
     def constant(self, ast):
         """Wrap a constant AST into a tokenizer"""
         return ConstantExpressionTokenizer(ast)

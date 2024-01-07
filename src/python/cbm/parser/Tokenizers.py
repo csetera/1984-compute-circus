@@ -8,6 +8,10 @@
 
 from cbm.parser.TokenBuffer import TokenBuffer
 
+#
+# https://www.c64-wiki.com/wiki/BASIC_token
+#
+
 class Tokenizer:
     """Default tokenizer for the parser.  This tokenizer emits no tokens."""
     def __init__(self, ast) -> None:
