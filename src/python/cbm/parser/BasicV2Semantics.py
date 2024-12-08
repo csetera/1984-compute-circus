@@ -16,9 +16,21 @@ from cbm.parser.Tokenizers import *
 class BasicV2Semantics:
     """Semantics support for the parsing of a BASIC program."""
 
+    def add_expr(self, ast):
+        """Wrap the expression AST into a tokenizer"""
+        return ArithmeticExpressionTokenizer(ast)
+
+    def and_expr(self, ast):
+        """Wrap the expression AST into a tokenizer"""
+        return ArithmeticExpressionTokenizer(ast)
+
     def assignment_statement(self, ast):
         """Wrap the assign statement AST into a tokenizer"""
         return AssignmentStatementTokenizer(ast)
+
+    def compare_expr(self, ast):
+        """Wrap the expression AST into a tokenizer"""
+        return ArithmeticExpressionTokenizer(ast)
 
     def constant(self, ast):
         """Wrap a constant AST into a tokenizer"""
@@ -27,6 +39,10 @@ class BasicV2Semantics:
     def data_statement(self, ast):
         """Wrap the data statement AST into a tokenizer"""
         return DataStatementTokenizer(ast)
+
+    def expression(self, ast):
+        """Wrap the expression AST into a tokenizer"""
+        return ArithmeticExpressionTokenizer(ast)
 
     def for_statement(self, ast):
         """Wrap the for statement AST into a tokenizer"""
@@ -47,6 +63,10 @@ class BasicV2Semantics:
     def line(self, ast):
         """Wrap the line AST into a tokenizer"""
         return LineTokenizer(ast)
+
+    def mult_expr(self, ast):
+        """Wrap the expression AST into a tokenizer"""
+        return ArithmeticExpressionTokenizer(ast)
 
     def next_statement(self, ast):
         """Wrap the next statement AST into a tokenizer"""

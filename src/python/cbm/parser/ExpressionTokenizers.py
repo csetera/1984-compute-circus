@@ -9,6 +9,20 @@
 from cbm.parser.Tokenizers import Tokenizer
 from cbm.parser.TokenBuffer import TokenBuffer
 
+class ArithmeticExpressionTokenizer(Tokenizer):
+    """Tokenize an arithmetic expression"""
+    def tokenize_into(self, buffer: TokenBuffer) -> None:
+        if isinstance(self.ast, Tokenizer):
+            self.ast.tokenize_into(buffer)
+        else:
+            if len(self.ast) == 1:
+                self.ast[0].tokenize_into(buffer)
+            else:
+                (first, keyword, second) = self.ast
+                first.tokenize_into(buffer)
+                buffer.append_keyword(keyword)
+                second.tokenize_into(buffer)
+
 class ConstantExpressionTokenizer(Tokenizer):
    """Tokenize a constant value"""
    def tokenize_into(self, buffer: TokenBuffer) -> None:
