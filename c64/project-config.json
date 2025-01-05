@@ -1,0 +1,13 @@
+{
+    "name": "c64-1984-compute-circus",
+    "description": "1984 Compute! Circus - Commodore 64 BASIC",
+    "toolkit": "basic",
+    "sources": [
+        "circus_c64.bas"
+    ],
+    "build": "debug",
+    "definitions": [],
+    "includes": [],
+    "args": [],
+    "compiler": ""
+}

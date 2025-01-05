@@ -11,6 +11,12 @@
             "program": "${workspaceFolder}/src/python/test/ProgramTokenizationTests.py",
             "console": "integratedTerminal",
             "justMyCode": true
+        },
+        {
+            "type": "vice",
+            "request": "launch",
+            "name": "Launch Vice",
+            "preLaunchTask": "${defaultBuildTask}"
         }
     ]
 }
