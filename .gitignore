@@ -2,3 +2,4 @@ src/python/cbm/__pycache__/*
 src/python/cbm/util/__pycache__/
 
 *.pyc
+c64/build/*
